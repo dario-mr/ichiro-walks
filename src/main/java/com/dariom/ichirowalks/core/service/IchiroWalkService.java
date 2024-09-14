@@ -16,4 +16,8 @@ public class IchiroWalkService {
     public List<IchiroWalk> getAllWalks() {
         return ichiroWalkRepository.findAll();
     }
+
+    public void save(IchiroWalk ichiroWalk) {
+        ichiroWalkRepository.save(ichiroWalk);
+    }
 }

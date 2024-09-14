@@ -1,0 +1,101 @@
+package com.dariom.ichirowalks.view.component.walksgrid;
+
+import com.dariom.ichirowalks.core.domain.IchiroWalk;
+import com.dariom.ichirowalks.core.service.IchiroWalkService;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Focusable;
+import com.vaadin.flow.component.KeyDownEvent;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.ItemClickEvent;
+import com.vaadin.flow.component.grid.editor.Editor;
+import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.ListDataProvider;
+
+import static com.dariom.ichirowalks.Util.formatToDate;
+import static com.dariom.ichirowalks.Util.formatToTime;
+import static com.vaadin.flow.component.Key.ENTER;
+import static com.vaadin.flow.component.Key.ESCAPE;
+import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
+import static com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER;
+import static com.vaadin.flow.component.notification.NotificationVariant.LUMO_SUCCESS;
+
+public class IchiroWalksGrid extends Grid<IchiroWalk> {
+
+    private final IchiroWalkService ichiroWalkService;
+    private final Editor<IchiroWalk> editor;
+    private final ListDataProvider<IchiroWalk> dataProvider;
+
+    public IchiroWalksGrid(IchiroWalkService ichiroWalkService) {
+        this.ichiroWalkService = ichiroWalkService;
+
+        // create editor components (text fields)
+        var leftAtField = new TextField();
+        var backAtField = new TextField();
+        leftAtField.setWidthFull();
+        backAtField.setWidthFull();
+
+        // add columns
+        addColumn(walk -> formatToDate(walk.getLeftAt())).setHeader("Day");
+        addColumn(walk -> formatToTime(walk.getLeftAt()))
+                .setHeader("Left At")
+                .setEditorComponent(leftAtField);
+        addColumn(walk -> formatToTime(walk.getBackAt()))
+                .setHeader("Back At")
+                .setEditorComponent(backAtField);
+
+        // set up binder and editor
+        var binder = new IchiroWalkBinder(leftAtField, backAtField);
+        editor = getEditor();
+        editor.setBinder(binder);
+        editor.setBuffered(true); // without this, save listener is never triggered :|
+
+        // open editor on single-click
+        addItemClickListener(this::handleRowClick);
+
+        // handle enter and escape actions
+        ComponentEventListener<KeyDownEvent> keyDownListener = this::handleEnterAndEscape;
+        leftAtField.addKeyDownListener(keyDownListener);
+        backAtField.addKeyDownListener(keyDownListener);
+
+        // handle save action
+        editor.addSaveListener(this::handleSave);
+
+        // set data provider
+        dataProvider = new ListDataProvider<>(ichiroWalkService.getAllWalks());
+        setDataProvider(dataProvider);
+
+        addThemeVariants(LUMO_ROW_STRIPES);
+    }
+
+    private void handleRowClick(ItemClickEvent<IchiroWalk> event) {
+        var editorComponent = event.getColumn().getEditorComponent();
+        if (editorComponent instanceof Focusable) {
+            editor.cancel();
+            editor.editItem(event.getItem());
+            ((Focusable<?>) editorComponent).focus();
+        }
+    }
+
+    private void handleEnterAndEscape(KeyDownEvent event) {
+        var keyPressed = event.getKey().toString();
+
+        if (ENTER.matches(keyPressed)) {
+            editor.save();
+        }
+        if (ESCAPE.matches(keyPressed)) {
+            editor.cancel();
+        }
+    }
+
+    private void handleSave(EditorSaveEvent<IchiroWalk> event) {
+        ichiroWalkService.save(event.getItem());
+        dataProvider.refreshItem(event.getItem());
+        editor.closeEditor();
+
+        var success = new Notification("Change saved!", 1_500, TOP_CENTER);
+        success.addThemeVariants(LUMO_SUCCESS);
+        success.open();
+    }
+}

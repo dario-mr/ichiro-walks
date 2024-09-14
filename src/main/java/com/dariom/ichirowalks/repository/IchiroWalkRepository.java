@@ -20,8 +20,8 @@ public class IchiroWalkRepository {
                 .toList();
     }
 
-    public void save(IchiroWalkEntity entity) {
-        jpaRepository.save(entity);
+    public void save(IchiroWalk ichiroWalk) {
+        jpaRepository.save(toEntity(ichiroWalk));
     }
 
     private IchiroWalk toDomain(IchiroWalkEntity entity) {
@@ -29,6 +29,14 @@ public class IchiroWalkRepository {
                 .id(entity.getId())
                 .leftAt(entity.getLeftAt())
                 .backAt(entity.getBackAt())
+                .build();
+    }
+
+    private IchiroWalkEntity toEntity(IchiroWalk domain) {
+        return IchiroWalkEntity.builder()
+                .id(domain.getId())
+                .leftAt(domain.getLeftAt())
+                .backAt(domain.getBackAt())
                 .build();
     }
 }

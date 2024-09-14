@@ -16,3 +16,5 @@ values (to_timestamp('2024-09-13 17:55:00', 'YYYY-MM-DD HH24:MI:SS'),
 insert into my_schema.ichiro_walk (left_at, back_at)
 values (to_timestamp('2024-09-13 23:01:00', 'YYYY-MM-DD HH24:MI:SS'),
         to_timestamp('2024-09-13 23:33:00', 'YYYY-MM-DD HH24:MI:SS'));
+insert into my_schema.ichiro_walk (left_at, back_at)
+values (to_timestamp('2024-09-14 09:38:00', 'YYYY-MM-DD HH24:MI:SS'), null);

@@ -2,7 +2,7 @@ package com.dariom.ichirowalks.view;
 
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.dariom.ichirowalks.view.component.Headline;
-import com.dariom.ichirowalks.view.component.IchiroWalksGrid;
+import com.dariom.ichirowalks.view.component.walksgrid.IchiroWalksGrid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -22,6 +22,7 @@ public class Home extends VerticalLayout {
 
     @PostConstruct
     public void init() {
+        setHeightFull();
         setAlignItems(CENTER);
         setPadding(false);
 
@@ -31,6 +32,7 @@ public class Home extends VerticalLayout {
                 new IchiroWalksGrid(ichiroWalkService)
         );
         container.setMaxWidth(MAX_WINDOW_WIDTH);
+        container.setHeightFull();
 
         add(container);
     }

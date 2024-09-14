@@ -3,20 +3,19 @@ package com.dariom.ichirowalks;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static java.time.format.DateTimeFormatter.ofPattern;
 
 @UtilityClass
 public class Util {
 
     public static String formatToDate(LocalDateTime localDateTime) {
-        return localDateTime == null
-                ? ""
-                : localDateTime.format(DateTimeFormatter.ofPattern("dd MMM ''yy"));
+        return localDateTime == null ? ""
+                : localDateTime.format(ofPattern("dd MMM ''yy"));
     }
 
     public static String formatToTime(LocalDateTime localDateTime) {
-        return localDateTime == null
-                ? ""
-                : localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return localDateTime == null ? ""
+                : localDateTime.format(ofPattern("HH:mm"));
     }
 }
