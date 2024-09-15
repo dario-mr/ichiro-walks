@@ -2,6 +2,7 @@ package com.dariom.ichirowalks.view.component.walksgrid;
 
 import com.dariom.ichirowalks.core.domain.IchiroWalk;
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
+import com.dariom.ichirowalks.view.component.SuccessNotification;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.KeyDownEvent;
@@ -11,10 +12,10 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.server.VaadinRequest;
 
 import java.util.ArrayList;
 
@@ -24,8 +25,6 @@ import static com.vaadin.flow.component.Key.ENTER;
 import static com.vaadin.flow.component.Key.ESCAPE;
 import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
 import static com.vaadin.flow.component.icon.VaadinIcon.TRASH;
-import static com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER;
-import static com.vaadin.flow.component.notification.NotificationVariant.LUMO_SUCCESS;
 
 public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
@@ -67,6 +66,12 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         leftAtField.addKeyDownListener(keyDownListener);
         backAtField.addKeyDownListener(keyDownListener);
 
+        if (isIOS()) {
+            // Apply iOS-specific focus handling, e.g., force manual field commit
+            leftAtField.addBlurListener(event -> editor.getBinder().writeBeanIfValid(editor.getItem()));
+            backAtField.addBlurListener(event -> editor.getBinder().writeBeanIfValid(editor.getItem()));
+        }
+
         // handle save action
         editor.addSaveListener(this::handleSave);
 
@@ -102,17 +107,11 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         // TODO fix: on iOS, event.getItem() contains old data...
 
         // Ensure the binder writes the current field values before saving
-        if (editor.getBinder().writeBeanIfValid(event.getItem())) {
-            ichiroWalkService.save(event.getItem());
-            dataProvider.refreshItem(event.getItem());
-            editor.closeEditor();
+        ichiroWalkService.save(event.getItem());
+        dataProvider.refreshItem(event.getItem());
+        editor.closeEditor();
 
-            var success = new Notification("Change saved!", 1_500, TOP_CENTER);
-            success.addThemeVariants(LUMO_SUCCESS);
-            success.open();
-        } else {
-            Notification.show("Validation failed!", 3_000, TOP_CENTER);
-        }
+        SuccessNotification.show("Change saved!");
     }
 
     private void showDeleteConfirmation(IchiroWalk walk) {
@@ -132,5 +131,11 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         ichiroWalkService.delete(walk.getId());
         dataProvider.getItems().remove(walk);
         dataProvider.refreshAll();
+    }
+
+    private boolean isIOS() {
+        var userAgent = VaadinRequest.getCurrent().getHeader("User-Agent");
+        return userAgent != null
+                && (userAgent.contains("iPhone") || userAgent.contains("iPad") || userAgent.contains("iPod"));
     }
 }
