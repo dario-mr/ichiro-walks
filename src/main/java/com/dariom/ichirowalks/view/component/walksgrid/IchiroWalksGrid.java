@@ -101,13 +101,18 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
     private void handleSave(EditorSaveEvent<IchiroWalk> event) {
         // TODO fix: on iOS, event.getItem() contains old data...
 
-        ichiroWalkService.save(event.getItem());
-        dataProvider.refreshItem(event.getItem());
-        editor.closeEditor();
+        // Ensure the binder writes the current field values before saving
+        if (editor.getBinder().writeBeanIfValid(event.getItem())) {
+            ichiroWalkService.save(event.getItem());
+            dataProvider.refreshItem(event.getItem());
+            editor.closeEditor();
 
-        var success = new Notification("Change saved!", 1_500, TOP_CENTER);
-        success.addThemeVariants(LUMO_SUCCESS);
-        success.open();
+            var success = new Notification("Change saved!", 1_500, TOP_CENTER);
+            success.addThemeVariants(LUMO_SUCCESS);
+            success.open();
+        } else {
+            Notification.show("Validation failed!", 3_000, TOP_CENTER);
+        }
     }
 
     private void showDeleteConfirmation(IchiroWalk walk) {
