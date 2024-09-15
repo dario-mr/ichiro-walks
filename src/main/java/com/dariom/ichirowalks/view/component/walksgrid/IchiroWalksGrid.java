@@ -55,7 +55,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         var binder = new IchiroWalkBinder(leftAtField, backAtField);
         editor = getEditor();
         editor.setBinder(binder);
-        editor.setBuffered(false); // without this, save listener is never triggered :|
+        editor.setBuffered(true); // without this, save listener is never triggered :|
 
         // open editor on single-click
         addItemClickListener(this::handleRowClick);
@@ -66,7 +66,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         backAtField.addKeyDownListener(keyDownListener);
 
         // handle save action
-//        editor.addSaveListener(this::handleSave);
+        editor.addSaveListener(this::handleSave);
 
         // set data provider
         var walks = new ArrayList<>(ichiroWalkService.getAllWalks()); // mutable list
@@ -92,7 +92,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         var keyPressed = event.getKey().toString();
 
         if (ENTER.matches(keyPressed)) {
-            handleSave(editor.getItem());
+            editor.save();
             return;
         }
         if (ESCAPE.matches(keyPressed)) {
@@ -101,17 +101,9 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
     }
 
     private void handleSave(EditorSaveEvent<IchiroWalk> event) {
-        // TODO fix: on iOS, event.getItem() contains old data...
+        // TODO fix: on iOS, event.getItem() does not update, until you select another field, then click enter
         ichiroWalkService.save(event.getItem());
         dataProvider.refreshItem(event.getItem());
-        editor.closeEditor();
-
-        SuccessNotification.show("Change saved!");
-    }
-
-    private void handleSave(IchiroWalk walk) {
-        ichiroWalkService.save(walk);
-        dataProvider.refreshItem(walk);
         editor.closeEditor();
 
         SuccessNotification.show("Change saved!");
