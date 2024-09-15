@@ -6,6 +6,7 @@ import com.dariom.ichirowalks.view.component.SuccessNotification;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.KeyDownEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -92,6 +93,9 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         var keyPressed = event.getKey().toString();
 
         if (ENTER.matches(keyPressed)) {
+            // Force a blur event to ensure the field value is committed
+            UI.getCurrent().getPage().executeJs("document.activeElement.blur();");
+
             editor.save();
             return;
         }
