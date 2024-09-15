@@ -11,7 +11,7 @@ public class Util {
 
     public static String formatToDate(LocalDateTime localDateTime) {
         return localDateTime == null ? ""
-                : localDateTime.format(ofPattern("dd MMM ''yy"));
+                : localDateTime.format(ofPattern("dd MMM"));
     }
 
     public static String formatToTime(LocalDateTime localDateTime) {

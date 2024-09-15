@@ -3,22 +3,24 @@ package com.dariom.ichirowalks.view.component.walksgrid;
 import com.dariom.ichirowalks.core.domain.IchiroWalk;
 import com.vaadin.flow.data.binder.Setter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import static java.time.LocalDateTime.of;
 
 public class BackAtSetter implements Setter<IchiroWalk, LocalTime> {
 
     @Override
     public void accept(IchiroWalk walk, LocalTime localTime) {
         if (localTime == null) {
+            walk.setBackAt(null);
             return;
         }
 
-        if (walk.getBackAt() == null) {
-            walk.setBackAt(LocalDateTime.of(LocalDate.now(), localTime));
+        var leftAt = walk.getLeftAt();
+        if (localTime.isBefore(leftAt.toLocalTime())) {
+            walk.setBackAt(of(leftAt.toLocalDate().plusDays(1), localTime));
         } else {
-            walk.setBackAt(LocalDateTime.of(walk.getBackAt().toLocalDate(), localTime));
+            walk.setBackAt(of(leftAt.toLocalDate(), localTime));
         }
     }
 }

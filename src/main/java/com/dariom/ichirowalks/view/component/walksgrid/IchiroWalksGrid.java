@@ -26,7 +26,6 @@ import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
 import static com.vaadin.flow.component.icon.VaadinIcon.TRASH;
 import static com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER;
 import static com.vaadin.flow.component.notification.NotificationVariant.LUMO_SUCCESS;
-import static java.lang.String.format;
 
 public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
@@ -51,6 +50,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         addColumn(walk -> formatToTime(walk.getBackAt()))
                 .setHeader("Back At")
                 .setEditorComponent(backAtField);
+        addColumn(new TimeSpentValueProvider()).setHeader("Time spent");
         addColumn(new ComponentRenderer<>(walk -> new Button(TRASH.create(), e -> showDeleteConfirmation(walk))));
 
         // set up binder and editor
@@ -99,7 +99,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
     }
 
     private void handleSave(EditorSaveEvent<IchiroWalk> event) {
-        Notification.show(format("New 'left at' value: %s", event.getItem().getLeftAt()), 5_000, TOP_CENTER); // TODO remove
+        // TODO fix: on iOS, event.getItem() contains old data...
 
         ichiroWalkService.save(event.getItem());
         dataProvider.refreshItem(event.getItem());
@@ -107,7 +107,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
         var success = new Notification("Change saved!", 1_500, TOP_CENTER);
         success.addThemeVariants(LUMO_SUCCESS);
-//        success.open(); // todo uncomment
+        success.open();
     }
 
     private void showDeleteConfirmation(IchiroWalk walk) {
