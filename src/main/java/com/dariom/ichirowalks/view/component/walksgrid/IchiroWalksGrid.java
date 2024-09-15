@@ -3,8 +3,8 @@ package com.dariom.ichirowalks.view.component.walksgrid;
 import com.dariom.ichirowalks.core.domain.IchiroWalk;
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.dariom.ichirowalks.view.component.SuccessNotification;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Focusable;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyDownEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -61,12 +61,9 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         addItemClickListener(this::handleRowClick);
 
         // handle enter and escape actions
-//        ComponentEventListener<KeyDownEvent> keyDownListener = this::handleEnterAndEscape;
-//        leftAtField.addKeyDownListener(keyDownListener);
-//        backAtField.addKeyDownListener(keyDownListener);
-
-        leftAtField.addKeyDownListener(Key.ENTER, event -> editor.save());
-        backAtField.addKeyDownListener(Key.ENTER, event -> editor.save());
+        ComponentEventListener<KeyDownEvent> keyDownListener = this::handleEnterAndEscape;
+        leftAtField.addKeyDownListener(keyDownListener);
+        backAtField.addKeyDownListener(keyDownListener);
 
         // handle save action
         editor.addSaveListener(this::handleSave);
