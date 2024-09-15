@@ -3,9 +3,11 @@ package com.dariom.ichirowalks.view;
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.dariom.ichirowalks.view.component.Headline;
 import com.dariom.ichirowalks.view.component.walksgrid.IchiroWalksGrid;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinRequest;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,7 @@ public class Home extends VerticalLayout {
         // main container
         var container = new VerticalLayout(
                 new Headline(),
+                new Text(VaadinRequest.getCurrent().getHeader("User-Agent")),
                 new IchiroWalksGrid(ichiroWalkService)
         );
         container.setMaxWidth(MAX_WINDOW_WIDTH);
