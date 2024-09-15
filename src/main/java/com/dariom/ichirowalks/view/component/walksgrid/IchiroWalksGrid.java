@@ -5,6 +5,8 @@ import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.KeyDownEvent;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.editor.Editor;
@@ -12,14 +14,19 @@ import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+
+import java.util.ArrayList;
 
 import static com.dariom.ichirowalks.Util.formatToDate;
 import static com.dariom.ichirowalks.Util.formatToTime;
 import static com.vaadin.flow.component.Key.ENTER;
 import static com.vaadin.flow.component.Key.ESCAPE;
 import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
+import static com.vaadin.flow.component.icon.VaadinIcon.TRASH;
 import static com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER;
 import static com.vaadin.flow.component.notification.NotificationVariant.LUMO_SUCCESS;
+import static java.lang.String.format;
 
 public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
@@ -44,6 +51,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         addColumn(walk -> formatToTime(walk.getBackAt()))
                 .setHeader("Back At")
                 .setEditorComponent(backAtField);
+        addColumn(new ComponentRenderer<>(walk -> new Button(TRASH.create(), e -> showDeleteConfirmation(walk))));
 
         // set up binder and editor
         var binder = new IchiroWalkBinder(leftAtField, backAtField);
@@ -63,7 +71,8 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         editor.addSaveListener(this::handleSave);
 
         // set data provider
-        dataProvider = new ListDataProvider<>(ichiroWalkService.getAllWalks());
+        var walks = new ArrayList<>(ichiroWalkService.getAllWalks()); // mutable list
+        dataProvider = new ListDataProvider<>(walks);
         setDataProvider(dataProvider);
 
         addThemeVariants(LUMO_ROW_STRIPES);
@@ -90,12 +99,33 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
     }
 
     private void handleSave(EditorSaveEvent<IchiroWalk> event) {
+        Notification.show(format("New 'left at' value: %s", event.getItem().getLeftAt()), 5_000, TOP_CENTER); // TODO remove
+
         ichiroWalkService.save(event.getItem());
         dataProvider.refreshItem(event.getItem());
         editor.closeEditor();
 
         var success = new Notification("Change saved!", 1_500, TOP_CENTER);
         success.addThemeVariants(LUMO_SUCCESS);
-        success.open();
+//        success.open(); // todo uncomment
+    }
+
+    private void showDeleteConfirmation(IchiroWalk walk) {
+        var confirmDialog = new ConfirmDialog();
+        confirmDialog.setHeader("Confirm deletion");
+        confirmDialog.setText("Are you sure you want to delete this item?");
+        confirmDialog.setCancelable(true);
+        confirmDialog.setConfirmText("Delete");
+        confirmDialog.setCancelText("Cancel");
+
+        confirmDialog.addConfirmListener(event -> deleteWalk(walk));
+
+        confirmDialog.open();
+    }
+
+    public void deleteWalk(IchiroWalk walk) {
+        ichiroWalkService.delete(walk.getId());
+        dataProvider.getItems().remove(walk);
+        dataProvider.refreshAll();
     }
 }

@@ -14,10 +14,14 @@ public class IchiroWalkService {
     private final IchiroWalkRepository ichiroWalkRepository;
 
     public List<IchiroWalk> getAllWalks() {
-        return ichiroWalkRepository.findAll();
+        return  ichiroWalkRepository.findAll();
     }
 
     public void save(IchiroWalk ichiroWalk) {
         ichiroWalkRepository.save(ichiroWalk);
+    }
+
+    public void delete(long walkId) {
+        ichiroWalkRepository.delete(walkId);
     }
 }

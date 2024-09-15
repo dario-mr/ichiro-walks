@@ -24,6 +24,10 @@ public class IchiroWalkRepository {
         jpaRepository.save(toEntity(ichiroWalk));
     }
 
+    public void delete(Long walkId) {
+        jpaRepository.deleteById(walkId);
+    }
+
     private IchiroWalk toDomain(IchiroWalkEntity entity) {
         return IchiroWalk.builder()
                 .id(entity.getId())

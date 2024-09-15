@@ -16,7 +16,7 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CE
 @RequiredArgsConstructor
 public class Home extends VerticalLayout {
 
-    private static final String MAX_WINDOW_WIDTH = "800px";
+    private static final String MAX_WINDOW_WIDTH = "900px";
 
     private final IchiroWalkService ichiroWalkService;
 
