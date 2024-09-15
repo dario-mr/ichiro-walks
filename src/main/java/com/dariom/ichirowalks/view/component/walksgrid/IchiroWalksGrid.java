@@ -3,8 +3,8 @@ package com.dariom.ichirowalks.view.component.walksgrid;
 import com.dariom.ichirowalks.core.domain.IchiroWalk;
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.dariom.ichirowalks.view.component.SuccessNotification;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Focusable;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyDownEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -12,11 +12,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.server.VaadinRequest;
 
 import java.util.ArrayList;
 
@@ -63,16 +61,12 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         addItemClickListener(this::handleRowClick);
 
         // handle enter and escape actions
-        ComponentEventListener<KeyDownEvent> keyDownListener = this::handleEnterAndEscape;
-        leftAtField.addKeyDownListener(keyDownListener);
-        backAtField.addKeyDownListener(keyDownListener);
+//        ComponentEventListener<KeyDownEvent> keyDownListener = this::handleEnterAndEscape;
+//        leftAtField.addKeyDownListener(keyDownListener);
+//        backAtField.addKeyDownListener(keyDownListener);
 
-        if (isIOS()) {
-            Notification.show("iOS");
-            // Apply iOS-specific focus handling, e.g., force manual field commit
-            leftAtField.addBlurListener(event -> editor.getBinder().writeBeanIfValid(editor.getItem()));
-            backAtField.addBlurListener(event -> editor.getBinder().writeBeanIfValid(editor.getItem()));
-        }
+        leftAtField.addKeyDownListener(Key.ENTER, event -> editor.save());
+        backAtField.addKeyDownListener(Key.ENTER, event -> editor.save());
 
         // handle save action
         editor.addSaveListener(this::handleSave);
@@ -86,9 +80,12 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
     }
 
     private void handleRowClick(ItemClickEvent<IchiroWalk> event) {
+        if (editor.isOpen()) {
+            editor.cancel();
+        }
+
         var editorComponent = event.getColumn().getEditorComponent();
         if (editorComponent instanceof Focusable) {
-            editor.cancel();
             editor.editItem(event.getItem());
             ((Focusable<?>) editorComponent).focus();
         }
@@ -99,6 +96,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
         if (ENTER.matches(keyPressed)) {
             editor.save();
+            return;
         }
         if (ESCAPE.matches(keyPressed)) {
             editor.cancel();
@@ -107,8 +105,6 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
     private void handleSave(EditorSaveEvent<IchiroWalk> event) {
         // TODO fix: on iOS, event.getItem() contains old data...
-
-        // Ensure the binder writes the current field values before saving
         ichiroWalkService.save(event.getItem());
         dataProvider.refreshItem(event.getItem());
         editor.closeEditor();
@@ -133,11 +129,5 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         ichiroWalkService.delete(walk.getId());
         dataProvider.getItems().remove(walk);
         dataProvider.refreshAll();
-    }
-
-    private boolean isIOS() {
-        var userAgent = VaadinRequest.getCurrent().getHeader("User-Agent");
-        return userAgent != null
-                && (userAgent.contains("iPhone") || userAgent.contains("iPad") || userAgent.contains("iPod"));
     }
 }
