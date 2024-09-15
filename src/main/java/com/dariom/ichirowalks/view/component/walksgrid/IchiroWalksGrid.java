@@ -12,6 +12,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -67,6 +68,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         backAtField.addKeyDownListener(keyDownListener);
 
         if (isIOS()) {
+            Notification.show("iOS");
             // Apply iOS-specific focus handling, e.g., force manual field commit
             leftAtField.addBlurListener(event -> editor.getBinder().writeBeanIfValid(editor.getItem()));
             backAtField.addBlurListener(event -> editor.getBinder().writeBeanIfValid(editor.getItem()));
