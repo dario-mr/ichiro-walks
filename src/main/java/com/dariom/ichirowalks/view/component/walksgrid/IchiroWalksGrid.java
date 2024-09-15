@@ -6,13 +6,13 @@ import com.dariom.ichirowalks.view.component.SuccessNotification;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.KeyDownEvent;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -25,6 +25,7 @@ import static com.vaadin.flow.component.Key.ENTER;
 import static com.vaadin.flow.component.Key.ESCAPE;
 import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
 import static com.vaadin.flow.component.icon.VaadinIcon.TRASH;
+import static com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER;
 
 public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
@@ -56,7 +57,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         var binder = new IchiroWalkBinder(leftAtField, backAtField);
         editor = getEditor();
         editor.setBinder(binder);
-        editor.setBuffered(true); // without this, save listener is never triggered :|
+        editor.setBuffered(false); // without this, save listener is never triggered :| todo true
 
         // open editor on single-click
         addItemClickListener(this::handleRowClick);
@@ -93,10 +94,11 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         var keyPressed = event.getKey().toString();
 
         if (ENTER.matches(keyPressed)) {
-            // Force a blur event to ensure the field value is committed
-            UI.getCurrent().getPage().executeJs("document.activeElement.blur();");
+            // todo remove
+            Notification.show(editor.getItem().getLeftAt().toString(), 5_000, TOP_CENTER);
+            handleSave(new EditorSaveEvent<>(editor, editor.getItem()));
 
-            editor.save();
+//            editor.save();
             return;
         }
         if (ESCAPE.matches(keyPressed)) {
