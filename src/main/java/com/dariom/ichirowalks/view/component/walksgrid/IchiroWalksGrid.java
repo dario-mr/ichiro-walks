@@ -12,7 +12,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.grid.editor.EditorSaveEvent;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -22,11 +21,10 @@ import java.util.ArrayList;
 
 import static com.dariom.ichirowalks.Util.formatToDate;
 import static com.dariom.ichirowalks.Util.formatToTime;
-import static com.vaadin.flow.component.Key.ENTER;
 import static com.vaadin.flow.component.Key.ESCAPE;
 import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
+import static com.vaadin.flow.component.icon.VaadinIcon.CHECK;
 import static com.vaadin.flow.component.icon.VaadinIcon.TRASH;
-import static com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER;
 
 @Slf4j
 public class IchiroWalksGrid extends Grid<IchiroWalk> {
@@ -38,9 +36,10 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
     public IchiroWalksGrid(IchiroWalkService ichiroWalkService) {
         this.ichiroWalkService = ichiroWalkService;
 
-        // create editor components (text fields)
+        // create editor components
         var leftAtField = new TextField();
         var backAtField = new TextField();
+        var saveButton = new Button(CHECK.create());
         leftAtField.setWidthFull();
         backAtField.setWidthFull();
 
@@ -53,27 +52,25 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
                 .setHeader("Back At")
                 .setEditorComponent(backAtField);
         addColumn(new TimeSpentValueProvider()).setHeader("Time spent");
-        addColumn(new ComponentRenderer<>(walk -> new Button(TRASH.create(), e -> showDeleteConfirmation(walk))));
+        addColumn(new ComponentRenderer<>(walk -> new Button(TRASH.create(), e -> showDeleteConfirmation(walk))))
+                .setEditorComponent(saveButton);
 
         // set up binder and editor
         var binder = new IchiroWalkBinder(leftAtField, backAtField);
         editor = getEditor();
         editor.setBinder(binder);
-        editor.setBuffered(false); // without this, save listener is never triggered :| todo true
+        editor.setBuffered(true); // edits are only committed when the user clicks the save button
 
         // open editor on single-click
         addItemClickListener(this::handleRowClick);
 
-        // handle enter and escape actions
-        ComponentEventListener<KeyDownEvent> keyDownListener = this::handleEnterAndEscape;
+        // handle escape action on the editable fields
+        ComponentEventListener<KeyDownEvent> keyDownListener = this::handleEscape;
         leftAtField.addKeyDownListener(keyDownListener);
         backAtField.addKeyDownListener(keyDownListener);
 
-        leftAtField.addBlurListener(event -> {
-            Notification.show("Blur: " + editor.getItem().getLeftAt().toString(), 5_000, TOP_CENTER);
-        });
-
         // handle save action
+        saveButton.addClickListener(event -> editor.save());
         editor.addSaveListener(this::handleSave);
 
         // set data provider
@@ -96,24 +93,15 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         }
     }
 
-    private void handleEnterAndEscape(KeyDownEvent event) {
+    private void handleEscape(KeyDownEvent event) {
         var keyPressed = event.getKey().toString();
 
-        if (ENTER.matches(keyPressed)) {
-            // todo remove
-            Notification.show("Enter: " + editor.getItem().getLeftAt().toString(), 5_000, TOP_CENTER);
-            handleSave(new EditorSaveEvent<>(editor, editor.getItem()));
-
-//            editor.save();
-            return;
-        }
         if (ESCAPE.matches(keyPressed)) {
             editor.cancel();
         }
     }
 
     private void handleSave(EditorSaveEvent<IchiroWalk> event) {
-        // TODO fix: on iOS, event.getItem() does not update, until you select another field, then click enter
         ichiroWalkService.save(event.getItem());
         dataProvider.refreshItem(event.getItem());
         editor.closeEditor();
