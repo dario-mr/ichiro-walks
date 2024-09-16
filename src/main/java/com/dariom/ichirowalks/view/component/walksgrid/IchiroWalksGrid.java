@@ -16,6 +16,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,7 @@ import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
 import static com.vaadin.flow.component.icon.VaadinIcon.TRASH;
 import static com.vaadin.flow.component.notification.Notification.Position.TOP_CENTER;
 
+@Slf4j
 public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
     private final IchiroWalkService ichiroWalkService;
@@ -67,6 +69,10 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         leftAtField.addKeyDownListener(keyDownListener);
         backAtField.addKeyDownListener(keyDownListener);
 
+        leftAtField.addBlurListener(event -> {
+            Notification.show("Blur: " + editor.getItem().getLeftAt().toString(), 5_000, TOP_CENTER);
+        });
+
         // handle save action
         editor.addSaveListener(this::handleSave);
 
@@ -95,7 +101,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
         if (ENTER.matches(keyPressed)) {
             // todo remove
-            Notification.show(editor.getItem().getLeftAt().toString(), 5_000, TOP_CENTER);
+            Notification.show("Enter: " + editor.getItem().getLeftAt().toString(), 5_000, TOP_CENTER);
             handleSave(new EditorSaveEvent<>(editor, editor.getItem()));
 
 //            editor.save();
