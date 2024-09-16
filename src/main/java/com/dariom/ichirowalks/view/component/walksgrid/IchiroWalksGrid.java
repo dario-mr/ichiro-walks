@@ -2,10 +2,9 @@ package com.dariom.ichirowalks.view.component.walksgrid;
 
 import com.dariom.ichirowalks.core.domain.IchiroWalk;
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
+import com.dariom.ichirowalks.event.RegisterWalkEvent;
 import com.dariom.ichirowalks.view.component.SuccessNotification;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Focusable;
-import com.vaadin.flow.component.KeyDownEvent;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -17,24 +16,32 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
-import static com.dariom.ichirowalks.Util.formatToDate;
-import static com.dariom.ichirowalks.Util.formatToTime;
+import static com.dariom.ichirowalks.util.DateUtil.formatToDate;
+import static com.dariom.ichirowalks.util.DateUtil.formatToTime;
 import static com.vaadin.flow.component.Key.ESCAPE;
 import static com.vaadin.flow.component.grid.GridVariant.LUMO_ROW_STRIPES;
 import static com.vaadin.flow.component.icon.VaadinIcon.CHECK;
 import static com.vaadin.flow.component.icon.VaadinIcon.TRASH;
+import static java.util.Optional.ofNullable;
 
 @Slf4j
 public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
     private final IchiroWalkService ichiroWalkService;
     private final Editor<IchiroWalk> editor;
-    private final ListDataProvider<IchiroWalk> dataProvider;
+    private final LocalDate dateToShow;
+    private ListDataProvider<IchiroWalk> dataProvider;
 
     public IchiroWalksGrid(IchiroWalkService ichiroWalkService) {
+        this(ichiroWalkService, null);
+    }
+
+    public IchiroWalksGrid(IchiroWalkService ichiroWalkService, LocalDate dateToShow) {
         this.ichiroWalkService = ichiroWalkService;
+        this.dateToShow = dateToShow;
 
         // create editor components
         var leftAtField = new TextField();
@@ -73,13 +80,31 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         saveButton.addClickListener(event -> editor.save());
         editor.addSaveListener(this::handleSave);
 
-        // set data provider
-        var walks = new ArrayList<>(ichiroWalkService.getAllWalks()); // mutable list
-        dataProvider = new ListDataProvider<>(walks);
-        setDataProvider(dataProvider);
+        // load walks and set data provider
+        loadWalks();
 
         addThemeVariants(LUMO_ROW_STRIPES);
     }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+
+        // "register walk" event -> when the user enters a new walk (click 'Leaving' or 'Back' button), reload the walks in the grid
+        ComponentUtil.addListener(
+                attachEvent.getUI(),
+                RegisterWalkEvent.class,
+                event -> loadWalks()
+        );
+    }
+
+    private void loadWalks() {
+        var walks = new ArrayList<>(ichiroWalkService.getWalks(ofNullable(dateToShow))); // mutable list
+
+        dataProvider = new ListDataProvider<>(walks);
+        setDataProvider(dataProvider);
+    }
+
 
     private void handleRowClick(ItemClickEvent<IchiroWalk> event) {
         if (editor.isOpen()) {
