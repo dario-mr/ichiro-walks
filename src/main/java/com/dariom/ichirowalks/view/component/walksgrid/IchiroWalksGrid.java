@@ -51,15 +51,18 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
         backAtField.setWidthFull();
 
         // add columns
-        addColumn(walk -> formatToDate(walk.getLeftAt())).setHeader("Day");
+        addColumn(walk -> formatToDate(walk.getLeftAt()))
+                .setHeader("Day").setAutoWidth(true);
         addColumn(walk -> formatToTime(walk.getLeftAt()))
-                .setHeader("Left At")
+                .setHeader("Left At").setAutoWidth(true)
                 .setEditorComponent(leftAtField);
         addColumn(walk -> formatToTime(walk.getBackAt()))
-                .setHeader("Back At")
+                .setHeader("Back At").setAutoWidth(true)
                 .setEditorComponent(backAtField);
-        addColumn(new TimeSpentValueProvider()).setHeader("Time spent");
+        addColumn(new TimeSpentValueProvider())
+                .setHeader("Duration").setAutoWidth(true);
         addColumn(new ComponentRenderer<>(walk -> new Button(TRASH.create(), e -> showDeleteConfirmation(walk))))
+                .setAutoWidth(true)
                 .setEditorComponent(saveButton);
 
         // set up binder and editor

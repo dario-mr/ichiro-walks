@@ -1,6 +1,7 @@
 package com.dariom.ichirowalks.view.route;
 
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
+import com.dariom.ichirowalks.view.component.BaseContainer;
 import com.dariom.ichirowalks.view.component.walksgrid.IchiroWalksGrid;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -9,7 +10,6 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
-import static com.dariom.ichirowalks.util.Constant.MAX_WINDOW_WIDTH;
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
 
 @Route(value = "all", layout = Home.class)
@@ -26,12 +26,10 @@ public class AllWalks extends VerticalLayout {
         setPadding(false);
 
         // main container
-        var container = new VerticalLayout(
-                new H4("All walks"),
+        var container = new BaseContainer(
+                new H4("All"),
                 new IchiroWalksGrid(ichiroWalkService)
         );
-        container.setMaxWidth(MAX_WINDOW_WIDTH);
-        container.setHeightFull();
 
         add(container);
     }
