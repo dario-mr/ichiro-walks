@@ -13,6 +13,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class WalkRecorder extends VerticalLayout {
 
@@ -58,10 +59,12 @@ public class WalkRecorder extends VerticalLayout {
     private void showTimeZones() {
         var defaultZone = Clock.systemDefaultZone();
         var UTCzone = Clock.systemUTC();
+        var pragueZone = Clock.system(ZoneId.of("Europe/Prague"));
 
         var defaultNow = LocalDateTime.now(defaultZone);
         var utcNow = LocalDateTime.now(UTCzone);
         var instant = Instant.now();
+        var pragueNow = LocalDateTime.now(pragueZone);
 
         var zoneTxt = new TextField("Default time-zone: ", defaultZone.toString(), "");
         zoneTxt.setWidthFull();
@@ -75,7 +78,10 @@ public class WalkRecorder extends VerticalLayout {
         var instantTxt = new TextField("Instant now: ", instant.toString(), "");
         instantTxt.setWidthFull();
         instantTxt.setReadOnly(true);
+        var pragueTxt = new TextField("Prague now: ", pragueNow.toString(), "");
+        pragueTxt.setWidthFull();
+        pragueTxt.setReadOnly(true);
 
-        add(zoneTxt, defaultTxt, utcTxt, instantTxt);
+        add(zoneTxt, defaultTxt, utcTxt, instantTxt, pragueTxt);
     }
 }
