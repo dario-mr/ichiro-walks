@@ -1,9 +1,9 @@
 package com.dariom.ichirowalks.view.route;
 
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
-import com.dariom.ichirowalks.view.component.Headline;
 import com.dariom.ichirowalks.view.component.WalkRecorder;
 import com.dariom.ichirowalks.view.component.walksgrid.IchiroWalksGrid;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -18,7 +18,7 @@ import java.time.ZoneId;
 import static com.dariom.ichirowalks.util.Constant.MAX_WINDOW_WIDTH;
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
 
-@Route("")
+@Route(value = "today", layout = Home.class)
 @PageTitle("Today's walks")
 @RequiredArgsConstructor
 public class TodayWalks extends VerticalLayout {
@@ -38,7 +38,7 @@ public class TodayWalks extends VerticalLayout {
 
         // main container
         var container = new VerticalLayout(
-                new Headline("Today's walks"),
+                new H4("Today's walks"),
                 new WalkRecorder(ichiroWalkService, timeZoneClock),
                 new IchiroWalksGrid(ichiroWalkService, LocalDate.now(timeZoneClock))
         );
