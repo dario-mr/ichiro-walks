@@ -24,9 +24,16 @@ public class IchiroWalkRepository {
                 .toList();
     }
 
+    /**
+     * Returns the walks created on the given date, from 4:00 AM until the next day at 4:00 AM.
+     *
+     * @param date date for which to fetch the walks
+     * @return a {@link List} of {@link IchiroWalk}
+     */
     public List<IchiroWalk> findByDate(LocalDate date) {
-        var startOfDay = date.atStartOfDay();
-        var endOfDay = date.atTime(MAX);
+        // from 4:00 until the next day at 4:00 AM
+        var startOfDay = date.atTime(4, 0);
+        var endOfDay = startOfDay.plusDays(1);
 
         return jpaRepository.findAllByLeftAtBetweenOrderByLeftAtDesc(startOfDay, endOfDay).stream()
                 .map(this::toDomain)

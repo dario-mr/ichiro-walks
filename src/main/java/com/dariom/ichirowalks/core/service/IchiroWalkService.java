@@ -20,7 +20,11 @@ public class IchiroWalkService {
     private final IchiroWalkRepository ichiroWalkRepository;
 
     /**
-     * Get all walks created in the given date, sorted by "left at" date, in descending order.
+     * Get the walks created on the given date, sorted by "left at" date, in descending order.
+     * <p>
+     * Since we often go out after midnight, this method returns walks created between 4:00 AM of the given date and 4:00 AM of the next day.
+     * <p>
+     * If no date is provided, returns all walks.
      *
      * @param date date for which to fetch the walks. If empty, returns all walks.
      * @return a {@link List} of {@link IchiroWalk}
