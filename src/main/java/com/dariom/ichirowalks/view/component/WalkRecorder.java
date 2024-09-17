@@ -2,7 +2,7 @@ package com.dariom.ichirowalks.view.component;
 
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.dariom.ichirowalks.event.RegisterWalkEvent;
-import com.dariom.ichirowalks.view.component.notifcation.InfoNotification;
+import com.dariom.ichirowalks.view.component.notifcation.WarnNotification;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -46,7 +46,7 @@ public class WalkRecorder extends VerticalLayout {
             return;
         }
 
-        InfoNotification.show(result.reason());
+        WarnNotification.show(result.reason());
     }
 
     private void handleBack(Clock clock) {
@@ -56,6 +56,6 @@ public class WalkRecorder extends VerticalLayout {
             return;
         }
 
-        InfoNotification.show(result.reason());
+        WarnNotification.show(result.reason());
     }
 }

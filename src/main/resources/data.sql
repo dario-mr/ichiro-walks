@@ -1,31 +1,43 @@
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-12 09:30:00', 'YYYY-MM-DD HH24:MI:SS'),
-        to_timestamp('2024-09-12 09:45:00', 'YYYY-MM-DD HH24:MI:SS'));
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-12 18:00:00', 'YYYY-MM-DD HH24:MI:SS'),
-        to_timestamp('2024-09-12 18:45:00', 'YYYY-MM-DD HH24:MI:SS'));
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-12 23:30:00', 'YYYY-MM-DD HH24:MI:SS'),
-        to_timestamp('2024-09-12 23:45:00', 'YYYY-MM-DD HH24:MI:SS'));
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-13 08:30:00', 'YYYY-MM-DD HH24:MI:SS'),
-        to_timestamp('2024-09-13 08:55:00', 'YYYY-MM-DD HH24:MI:SS'));
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-13 17:55:00', 'YYYY-MM-DD HH24:MI:SS'),
-        to_timestamp('2024-09-13 18:59:00', 'YYYY-MM-DD HH24:MI:SS'));
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-13 23:01:00', 'YYYY-MM-DD HH24:MI:SS'),
-        to_timestamp('2024-09-13 23:33:00', 'YYYY-MM-DD HH24:MI:SS'));
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-14 09:38:00', 'YYYY-MM-DD HH24:MI:SS'), null);
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-14 23:30:00', 'YYYY-MM-DD HH24:MI:SS'),
-        to_timestamp('2024-09-15 00:13:00', 'YYYY-MM-DD HH24:MI:SS'));
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-15 23:30:00', 'YYYY-MM-DD HH24:MI:SS'), null);
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-16 08:30:00', 'YYYY-MM-DD HH24:MI:SS'), null);
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-16 12:30:00', 'YYYY-MM-DD HH24:MI:SS'), null);
-insert into my_schema.ichiro_walk (left_at, back_at)
-values (to_timestamp('2024-09-16 23:30:00', 'YYYY-MM-DD HH24:MI:SS'), null);
+-- DEV data. This also acts as PROD backup done at 2024-09-17 11:00.
+
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-03 09:05:00', '2024-09-03 09:18:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-03 17:53:00', '2024-09-03 18:46:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-04 00:17:00', '2024-09-04 00:49:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-04 09:55:00', '2024-09-04 10:22:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-04 18:29:00', '2024-09-04 19:40:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-04 23:33:00', '2024-09-05 00:12:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-05 09:12:00', '2024-09-05 09:20:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-05 19:23:00', '2024-09-05 19:48:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-05 23:38:00', '2024-09-06 00:05:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-06 09:32:00', '2024-09-06 09:49:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-06 18:46:00', '2024-09-06 19:44:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-07 00:08:00', '2024-09-07 00:40:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-07 11:06:00', '2024-09-07 11:31:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-07 20:49:00', '2024-09-07 21:23:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-08 10:28:00', '2024-09-08 10:42:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-08 19:40:00', '2024-09-08 20:27:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-08 23:52:00', '2024-09-09 00:27:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-09 10:06:00', '2024-09-09 10:14:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-09 19:10:00', '2024-09-09 19:43:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-09 23:18:00', '2024-09-09 23:44:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-10 08:52:00', '2024-09-10 09:06:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-10 18:29:00', '2024-09-10 19:16:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-10 23:14:00', '2024-09-10 23:50:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-11 09:24:00', '2024-09-11 09:36:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-11 18:13:00', '2024-09-11 18:45:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-11 23:02:00', '2024-09-11 23:37:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-12 09:38:00', '2024-09-12 09:49:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-12 18:50:00', '2024-09-12 19:26:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-12 22:54:00', '2024-09-12 23:23:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-13 10:36:00', '2024-09-13 10:48:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-13 19:15:00', '2024-09-13 19:35:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-13 22:48:00', '2024-09-13 23:05:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-14 12:00:00', '2024-09-14 13:05:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-14 20:33:00', '2024-09-14 21:05:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-15 10:00:00', '2024-09-15 10:10:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-15 16:50:00', '2024-09-15 17:38:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-15 23:08:00', '2024-09-15 23:36:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-16 09:22:00', '2024-09-16 09:32:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-16 19:44:00', '2024-09-16 19:51:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-17 00:44:00', '2024-09-17 01:01:00');
+INSERT INTO my_schema.ichiro_walk (left_at, back_at) VALUES ('2024-09-17 09:16:00', '2024-09-17 09:29:00');
