@@ -5,6 +5,8 @@ spring:
   profiles.active: ${PROFILE:prod}
   config.import: optional:file:.env[.properties] # enable scanning of .env file
 
+app.time-zone: ${TIMEZONE:UTC+2}
+
 ---
 spring:
   config.activate.on-profile: dev

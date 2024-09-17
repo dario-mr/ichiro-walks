@@ -8,12 +8,9 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 public class WalkRecorder extends VerticalLayout {
 
@@ -22,66 +19,35 @@ public class WalkRecorder extends VerticalLayout {
     private final Button leavingButton;
     private final Button backButton;
 
-    public WalkRecorder(IchiroWalkService ichiroWalkService) {
-        showTimeZones();
-
+    public WalkRecorder(IchiroWalkService ichiroWalkService, Clock timeZoneClock) {
         this.ichiroWalkService = ichiroWalkService;
-        setPadding(false);
 
         // add buttons
         leavingButton = new Button("Leaving...");
         backButton = new Button("...Back!");
 
         // add button listeners
-        leavingButton.addClickListener(event -> handleLeaving());
-        backButton.addClickListener(event -> handleBack());
+        leavingButton.addClickListener(event -> handleLeaving(timeZoneClock));
+        backButton.addClickListener(event -> handleBack(timeZoneClock));
 
         // place buttons in container
         var container = new HorizontalLayout(leavingButton, backButton);
         container.setWidthFull();
         container.setFlexGrow(1, leavingButton, backButton);
         add(container);
+
+        setPadding(false);
     }
 
-    private void handleLeaving() {
+    private void handleLeaving(Clock clock) {
         ichiroWalkService.save(IchiroWalk.builder()
-                .leftAt(LocalDateTime.now())
+                .leftAt(LocalDateTime.now(clock))
                 .build());
         ComponentUtil.fireEvent(UI.getCurrent(), new RegisterWalkEvent(leavingButton));
     }
 
-    private void handleBack() {
-        ichiroWalkService.updateBackAt(LocalDateTime.now());
+    private void handleBack(Clock clock) {
+        ichiroWalkService.updateBackAt(LocalDateTime.now(clock));
         ComponentUtil.fireEvent(UI.getCurrent(), new RegisterWalkEvent(backButton));
-    }
-
-    // TODO remove
-    private void showTimeZones() {
-        var defaultZone = Clock.systemDefaultZone();
-        var UTCzone = Clock.systemUTC();
-        var pragueZone = Clock.system(ZoneId.of("Europe/Prague"));
-
-        var defaultNow = LocalDateTime.now(defaultZone);
-        var utcNow = LocalDateTime.now(UTCzone);
-        var instant = Instant.now();
-        var pragueNow = LocalDateTime.now(pragueZone);
-
-        var zoneTxt = new TextField("Default time-zone: ", defaultZone.toString(), "");
-        zoneTxt.setWidthFull();
-        zoneTxt.setReadOnly(true);
-        var defaultTxt = new TextField("Default now: ", defaultNow.toString(), "");
-        defaultTxt.setWidthFull();
-        defaultTxt.setReadOnly(true);
-        var utcTxt = new TextField("UTC now: ", utcNow.toString(), "");
-        utcTxt.setWidthFull();
-        utcTxt.setReadOnly(true);
-        var instantTxt = new TextField("Instant now: ", instant.toString(), "");
-        instantTxt.setWidthFull();
-        instantTxt.setReadOnly(true);
-        var pragueTxt = new TextField("Prague now: ", pragueNow.toString(), "");
-        pragueTxt.setWidthFull();
-        pragueTxt.setReadOnly(true);
-
-        add(zoneTxt, defaultTxt, utcTxt, instantTxt, pragueTxt);
     }
 }
