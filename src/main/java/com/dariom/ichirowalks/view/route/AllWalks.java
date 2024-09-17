@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import static com.dariom.ichirowalks.util.Constant.MAX_WINDOW_WIDTH;
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
 
-@Route("walks")
+@Route("all")
 @PageTitle("All walks")
 @RequiredArgsConstructor
 public class AllWalks extends VerticalLayout { // TODO add UI element to navigate to this page

@@ -3,7 +3,7 @@ package com.dariom.ichirowalks.view.component.walksgrid;
 import com.dariom.ichirowalks.core.domain.IchiroWalk;
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.dariom.ichirowalks.event.RegisterWalkEvent;
-import com.dariom.ichirowalks.view.component.SuccessNotification;
+import com.dariom.ichirowalks.view.component.notifcation.SuccessNotification;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;

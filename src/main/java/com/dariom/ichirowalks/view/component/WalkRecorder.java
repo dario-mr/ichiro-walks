@@ -1,8 +1,8 @@
 package com.dariom.ichirowalks.view.component;
 
-import com.dariom.ichirowalks.core.domain.IchiroWalk;
 import com.dariom.ichirowalks.core.service.IchiroWalkService;
 import com.dariom.ichirowalks.event.RegisterWalkEvent;
+import com.dariom.ichirowalks.view.component.notifcation.InfoNotification;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -40,14 +40,22 @@ public class WalkRecorder extends VerticalLayout {
     }
 
     private void handleLeaving(Clock clock) {
-        ichiroWalkService.save(IchiroWalk.builder()
-                .leftAt(LocalDateTime.now(clock))
-                .build());
-        ComponentUtil.fireEvent(UI.getCurrent(), new RegisterWalkEvent(leavingButton));
+        var result = ichiroWalkService.createWalk(LocalDateTime.now(clock));
+        if (result.success()) {
+            ComponentUtil.fireEvent(UI.getCurrent(), new RegisterWalkEvent(leavingButton));
+            return;
+        }
+
+        InfoNotification.show(result.reason());
     }
 
     private void handleBack(Clock clock) {
-        ichiroWalkService.updateBackAt(LocalDateTime.now(clock));
-        ComponentUtil.fireEvent(UI.getCurrent(), new RegisterWalkEvent(backButton));
+        var result = ichiroWalkService.updateBackAt(LocalDateTime.now(clock));
+        if (result.success()) {
+            ComponentUtil.fireEvent(UI.getCurrent(), new RegisterWalkEvent(backButton));
+            return;
+        }
+
+        InfoNotification.show(result.reason());
     }
 }

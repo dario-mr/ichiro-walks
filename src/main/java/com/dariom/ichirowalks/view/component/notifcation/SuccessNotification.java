@@ -1,4 +1,4 @@
-package com.dariom.ichirowalks.view.component;
+package com.dariom.ichirowalks.view.component.notifcation;
 
 import com.vaadin.flow.component.notification.Notification;
 
