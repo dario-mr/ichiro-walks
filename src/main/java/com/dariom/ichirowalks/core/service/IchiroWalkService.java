@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+
+import static java.time.LocalTime.MAX;
+import static java.time.LocalTime.MIDNIGHT;
 
 @Slf4j
 @Service
@@ -22,16 +25,32 @@ public class IchiroWalkService {
     /**
      * Get the walks created on the given date, sorted by "left at" date, in descending order.
      * <p>
-     * Since we often go out after midnight, this method returns walks created between 4:00 AM of the given date and 4:00 AM of the next day.
+     * Since we often go out after midnight, if the given date is before 4:00 AM, it also returns yesterday's walks.
      * <p>
      * If no date is provided, returns all walks.
      *
-     * @param date date for which to fetch the walks. If empty, returns all walks.
+     * @param optionalDateTime date for which to fetch the walks. If empty, returns all walks.
      * @return a {@link List} of {@link IchiroWalk}
      */
-    public List<IchiroWalk> getWalks(Optional<LocalDate> date) {
-        return date.map(ichiroWalkRepository::findByDate)
-                .orElseGet(ichiroWalkRepository::findAll);
+    public List<IchiroWalk> getWalksOfActiveDay(Optional<LocalDateTime> optionalDateTime) {
+        if (optionalDateTime.isEmpty()) {
+            return ichiroWalkRepository.findAll();
+        }
+
+        final LocalDateTime from, until;
+        var dateTime = optionalDateTime.get();
+        var fourAM = LocalTime.of(4, 0);
+
+        // if dateTime is before 4 AM, load from yesterday at 4 AM until today at 4 AM
+        if (dateTime.toLocalTime().isBefore(fourAM)) {
+            from = LocalDateTime.of(dateTime.minusDays(1).toLocalDate(), fourAM);
+            until = LocalDateTime.of(dateTime.toLocalDate(), fourAM);
+        } else { // if dateTime is after 4 AM, load from today at 4 AM until the end of day
+            from = LocalDateTime.of(dateTime.toLocalDate(), fourAM);
+            until = LocalDateTime.of(dateTime.toLocalDate(), MAX);
+        }
+
+        return ichiroWalkRepository.findByDate(from, until);
     }
 
     /**
@@ -43,12 +62,16 @@ public class IchiroWalkService {
      * @return {@link Result} containing if the operation succeeded, and if not, the reason of the failure
      */
     public Result createWalk(LocalDateTime leftAt) {
-        var todayWalks = ichiroWalkRepository.findByDate(leftAt.toLocalDate());
+        var leftAtDate = leftAt.toLocalDate();
+        var startOfDay = LocalDateTime.of(leftAtDate, MIDNIGHT);
+        var endOfDay = LocalDateTime.of(leftAtDate, MAX);
+
+        var todayWalks = ichiroWalkRepository.findByDate(startOfDay, endOfDay);
         var walkWithNullBackAtExists = todayWalks.stream()
                 .anyMatch(walk -> walk.getBackAt() == null);
 
         if (walkWithNullBackAtExists) {
-            log.info("Walk with no 'back at' exists for date [{}], will not create a new one", leftAt.toLocalDate());
+            log.info("Walk with empty 'back at' exists for date [{}], will not create a new one", leftAtDate);
             return Result.builder()
                     .success(false)
                     .reason("A walk already exists")

@@ -16,7 +16,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static com.dariom.ichirowalks.util.DateUtil.formatToDate;
@@ -32,14 +32,14 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
 
     private final IchiroWalkService ichiroWalkService;
     private final Editor<IchiroWalk> editor;
-    private final LocalDate dateToShow;
+    private final LocalDateTime dateToShow;
     private ListDataProvider<IchiroWalk> dataProvider;
 
     public IchiroWalksGrid(IchiroWalkService ichiroWalkService) {
         this(ichiroWalkService, null);
     }
 
-    public IchiroWalksGrid(IchiroWalkService ichiroWalkService, LocalDate dateToShow) {
+    public IchiroWalksGrid(IchiroWalkService ichiroWalkService, LocalDateTime dateToShow) {
         this.ichiroWalkService = ichiroWalkService;
         this.dateToShow = dateToShow;
 
@@ -102,7 +102,7 @@ public class IchiroWalksGrid extends Grid<IchiroWalk> {
     }
 
     private void loadWalks() {
-        var walks = new ArrayList<>(ichiroWalkService.getWalks(ofNullable(dateToShow))); // mutable list
+        var walks = new ArrayList<>(ichiroWalkService.getWalksOfActiveDay(ofNullable(dateToShow))); // mutable list
 
         dataProvider = new ListDataProvider<>(walks);
         setDataProvider(dataProvider);

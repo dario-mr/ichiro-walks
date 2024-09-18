@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,17 +26,14 @@ public class IchiroWalkRepository {
     }
 
     /**
-     * Returns the walks created on the given date, from 4:00 AM until the next day at 4:00 AM.
+     * Returns the walks created on the given date-time range.
      *
-     * @param date date for which to fetch the walks
+     * @param from  date-time from which to fetch walks
+     * @param until date-time until which to fetch walks
      * @return a {@link List} of {@link IchiroWalk}
      */
-    public List<IchiroWalk> findByDate(LocalDate date) {
-        // from 4:00 until the next day at 4:00 AM
-        var startOfDay = date.atTime(4, 0);
-        var endOfDay = startOfDay.plusDays(1);
-
-        return jpaRepository.findAllByLeftAtBetweenOrderByLeftAtDesc(startOfDay, endOfDay).stream()
+    public List<IchiroWalk> findByDate(LocalDateTime from, LocalDateTime until) {
+        return jpaRepository.findAllByLeftAtBetweenOrderByLeftAtDesc(from, until).stream()
                 .map(this::toDomain)
                 .toList();
     }

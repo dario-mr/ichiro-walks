@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Clock;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment.CENTER;
@@ -40,7 +40,7 @@ public class TodayWalks extends VerticalLayout {
         var container = new BaseContainer(
                 new H4("Today"),
                 new WalkRecorder(ichiroWalkService, timeZoneClock),
-                new IchiroWalksGrid(ichiroWalkService, LocalDate.now(timeZoneClock))
+                new IchiroWalksGrid(ichiroWalkService, LocalDateTime.now(timeZoneClock))
         );
 
         add(container);
