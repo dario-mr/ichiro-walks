@@ -1,5 +1,6 @@
 package com.dariom.ichirowalks;
 
+import com.dariom.ichirowalks.util.PathResolver;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.AppShellSettings;
@@ -20,6 +21,6 @@ public class Application implements AppShellConfigurator {
 
     @Override
     public void configurePage(AppShellSettings settings) {
-        settings.addFavIcon("icon", "/icons/favicon.png", "256x256");
+        settings.addFavIcon("icon", PathResolver.resolve("/icons/favicon.png"), "256x256");
     }
 }
