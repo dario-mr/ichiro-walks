@@ -6,10 +6,9 @@
 .settings
 .env
 node_modules/
-frontend/generated/
-frontend/index.html
+src/main/frontend/generated
+out
 
-/package-lock.json
 /webpack.config.js
 /webpack.generated.js
 vite.generated.ts
