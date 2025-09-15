@@ -8,6 +8,8 @@ Web app to track the walks of our dog Ichiro
 - `PROFILE`: spring profile to apply (default: `prod`)
     - `dev`: vaadin production mode is off
     - `prod`: vaadin production mode is on
-- `DB_PASSWORD`: database password (default: `<empty>`)
+- `DB_USER`: Database user (default: `postgres.rsuhstqfoaoabfzgezxr`)
+- `DB_PASSWORD`: Database password (default: `<empty>`)
+- `DB_PORT`: Database port (default: `6543`)
 - `TIMEZONE`: app time-zone (default: `UTC+2`)
     - this is a work-around until I find a proper solution to handle timezones in docker (never)
